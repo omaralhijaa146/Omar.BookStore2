@@ -1,0 +1,105 @@
+{
+  "template": "app",
+  "imports": {
+    "Volo.Abp.LeptonXLiteTheme": {
+      "version": "4.3.2",
+      "isInstalled": true
+    },
+    "Volo.Abp.Account": {
+      "version": "9.3.2",
+      "isInstalled": true
+    },
+    "Volo.Abp.OpenIddict": {
+      "version": "9.3.2",
+      "isInstalled": true
+    },
+    "Volo.Abp.Identity": {
+      "version": "9.3.2",
+      "isInstalled": true
+    },
+    "Volo.Abp.TenantManagement": {
+      "version": "9.3.2",
+      "isInstalled": true
+    },
+    "Volo.Abp.SettingManagement": {
+      "version": "9.3.2",
+      "isInstalled": true
+    },
+    "Volo.Abp.PermissionManagement": {
+      "version": "9.3.2",
+      "isInstalled": true
+    },
+    "Volo.Abp.FeatureManagement": {
+      "version": "9.3.2",
+      "isInstalled": true
+    }
+  },
+  "folders": {
+    "items": {
+      "src": {},
+      "test": {}
+    }
+  },
+  "packages": {
+    "Omar.BookStore2.Application": {
+      "path": "src/Omar.BookStore2.Application/Omar.BookStore2.Application.abppkg",
+      "folder": "src"
+    },
+    "Omar.BookStore2.Application.Tests": {
+      "path": "test/Omar.BookStore2.Application.Tests/Omar.BookStore2.Application.Tests.abppkg",
+      "folder": "test"
+    },
+    "Omar.BookStore2.Domain.Shared": {
+      "path": "src/Omar.BookStore2.Domain.Shared/Omar.BookStore2.Domain.Shared.abppkg",
+      "folder": "src"
+    },
+    "Omar.BookStore2.Application.Contracts": {
+      "path": "src/Omar.BookStore2.Application.Contracts/Omar.BookStore2.Application.Contracts.abppkg",
+      "folder": "src"
+    },
+    "Omar.BookStore2.HttpApi": {
+      "path": "src/Omar.BookStore2.HttpApi/Omar.BookStore2.HttpApi.abppkg",
+      "folder": "src"
+    },
+    "Omar.BookStore2.HttpApi.Client": {
+      "path": "src/Omar.BookStore2.HttpApi.Client/Omar.BookStore2.HttpApi.Client.abppkg",
+      "folder": "src"
+    },
+    "Omar.BookStore2.Web": {
+      "path": "src/Omar.BookStore2.Web/Omar.BookStore2.Web.abppkg",
+      "folder": "src"
+    },
+    "Omar.BookStore2.Web.Tests": {
+      "path": "test/Omar.BookStore2.Web.Tests/Omar.BookStore2.Web.Tests.abppkg",
+      "folder": "test"
+    },
+    "Omar.BookStore2.EntityFrameworkCore.Tests": {
+      "path": "test/Omar.BookStore2.EntityFrameworkCore.Tests/Omar.BookStore2.EntityFrameworkCore.Tests.abppkg",
+      "folder": "test"
+    },
+    "Omar.BookStore2.EntityFrameworkCore": {
+      "path": "src/Omar.BookStore2.EntityFrameworkCore/Omar.BookStore2.EntityFrameworkCore.abppkg",
+      "folder": "src"
+    },
+    "Omar.BookStore2.TestBase": {
+      "path": "test/Omar.BookStore2.TestBase/Omar.BookStore2.TestBase.abppkg",
+      "folder": "test"
+    },
+    "Omar.BookStore2.Domain.Tests": {
+      "path": "test/Omar.BookStore2.Domain.Tests/Omar.BookStore2.Domain.Tests.abppkg",
+      "folder": "test"
+    },
+    "Omar.BookStore2.HttpApi.Client.ConsoleTestApp": {
+      "path": "test/Omar.BookStore2.HttpApi.Client.ConsoleTestApp/Omar.BookStore2.HttpApi.Client.ConsoleTestApp.abppkg",
+      "folder": "test"
+    },
+    "Omar.BookStore2.DbMigrator": {
+      "path": "src/Omar.BookStore2.DbMigrator/Omar.BookStore2.DbMigrator.abppkg",
+      "folder": "src"
+    },
+    "Omar.BookStore2.Domain": {
+      "path": "src/Omar.BookStore2.Domain/Omar.BookStore2.Domain.abppkg",
+      "folder": "src"
+    }
+  }
+}
