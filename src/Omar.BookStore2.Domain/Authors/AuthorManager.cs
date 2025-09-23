@@ -24,7 +24,7 @@ namespace Omar.BookStore2.Authors
             Check.NotNullOrWhiteSpace(name, nameof(name), AuthorConsts.MaxNameLength);
             var existingAuthor = await _authorRepository.FindByNameAsync(name);
             if (existingAuthor is not null)
-                throw new AuthoeAlreadyExistsException(name);
+                throw new AuthorAlreadyExistsException(name);
             return new Author(GuidGenerator.Create(), name, birthDate, shortBio);
         }
 

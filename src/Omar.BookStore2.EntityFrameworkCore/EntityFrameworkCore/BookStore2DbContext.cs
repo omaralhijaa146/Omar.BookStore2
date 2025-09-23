@@ -15,6 +15,7 @@ using Volo.Abp.OpenIddict.EntityFrameworkCore;
 using Volo.Abp.TenantManagement;
 using Volo.Abp.TenantManagement.EntityFrameworkCore;
 using Omar.BookStore2.Books;
+using Omar.BookStore2.Authors;
 
 namespace Omar.BookStore2.EntityFrameworkCore;
 
@@ -29,7 +30,7 @@ public class BookStore2DbContext :
     /* Add DbSet properties for your Aggregate Roots / Entities here. */
 
     public DbSet<Book> Books { get; set; }  
-
+    public DbSet<Author> Authors { get; set; }
 
     #region Entities from the modules
 
@@ -90,6 +91,18 @@ public class BookStore2DbContext :
             b.ConfigureByConvention();
 
             b.Property(x => x.Name).IsRequired().HasMaxLength(128);
+        });
+
+        builder.Entity<Author>(opt => {
+
+            opt.ToTable(BookStore2Consts.DbTablePrefix+"Auhtors",BookStore2Consts.DbSchema);
+
+            opt.ConfigureByConvention();
+
+            opt.Property(x => x.Name).IsRequired().HasMaxLength(AuthorConsts.MaxNameLength);
+
+            opt.HasIndex(x=>x.Name);
+        
         });
 
         /* Configure your own tables/entities inside here */

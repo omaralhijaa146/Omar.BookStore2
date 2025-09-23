@@ -10,8 +10,9 @@ namespace Omar.BookStore2.Authors
 {
     public class Author:FullAuditedAggregateRoot<Guid>
     {
+        private DateTime _birthDate;
         public string Name { get; private set; }
-        public DateTime BirthDate { get; private set; }
+        public DateTime BirthDate { get=>_birthDate;  set=>SetBirthDate(value); }
         public string ShortBio { get; set; }
 
         private Author() { }
@@ -32,7 +33,7 @@ namespace Omar.BookStore2.Authors
 
         private void SetBirthDate(DateTime birthDate) {
 
-            BirthDate = Check.NotDefaultOrNull<DateTime>(birthDate,nameof(birthDate));
+            _birthDate = Check.NotDefaultOrNull<DateTime>(birthDate,nameof(birthDate));
 
         }
 
