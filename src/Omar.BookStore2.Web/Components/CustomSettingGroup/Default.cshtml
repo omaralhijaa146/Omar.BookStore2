@@ -1,0 +1,65 @@
+﻿@using Omar.BookStore2.Web.Pages.Settings;
+@model CustomSettingsDto;
+
+
+
+<script>
+    function setFormValues(values){
+
+        for(const key in values){
+            $('#' + key).val(values[key]??"");
+        }
+    }
+
+    function getFormValues(formId){
+       const arrayData = $('#' + formId).serializeArray();
+        const objectData = {};
+    arrayData.forEach(function(item) {
+        objectData[item.name] = item.value;
+    });
+    return objectData;
+    }
+    $(
+
+    
+
+        function () {
+         
+            $("#saveButton").click(function () {
+                 
+            omar.bookStore2.settings.settings.changeSetting(getFormValues("customSettingsForm")).then(function() {
+                abp.notify.success('Settings saved successfully!');
+                
+                omar.bookStore2.settings.settings.getSettings().then(res=>{
+
+                   setFormValues(res);
+                   console.log(getFormValues("customSettingsForm"));
+                
+                });
+            });
+
+            });
+
+            $("#cancelButton").click(function () {
+                 $('#customSettingsForm')[0].reset();
+            });
+
+        }
+
+    );
+</script>
+
+
+<abp-card>
+    <abp-card-header>Custom Settings</abp-card-header>
+    <abp-card-body>
+        <form id="customSettingsForm">
+            <abp-input asp-for="TestSetting" id="@(Model.TestSetting)" ></abp-input>
+        </form>
+    </abp-card-body>
+    <abp-card-footer >
+       <button type="button" class="btn btn-primary" id="saveButton">Save</button>
+       <button type="button" class="btn btn-secondary" id="cancelButton">Cancel</button>
+    </abp-card-footer>
+</abp-card>
+

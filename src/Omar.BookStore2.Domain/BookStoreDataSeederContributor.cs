@@ -35,60 +35,53 @@ namespace Omar.BookStore2
             if (await _bookRepository.GetCountAsync() > 0)
                 return;
 
-            var booksToBeSeeded = new List<Book>
-            {
-                new Book(
+            var orwell = await _authorManager.CreateAsync(
+                     "George Orwell",
+                    new DateTime(1903, 6, 25),
+                    "Orwell produced literary criticism and poetry, fiction and polemical journalism; and is best known for the allegorical novella Animal Farm (1945) and the dystopian novel Nineteen Eighty-Four (1949)."
+                    );
+            var douglas= await _authorManager.CreateAsync(
+                    "Douglas Adams",
+                    new DateTime(1952, 3, 11),
+                    "Douglas Adams was an English author, screenwriter, essayist, humorist, satirist and dramatist. Adams was an advocate for environmentalism and conservation, a lover of fast cars, technological innovation and the Apple Macintosh, and a self-proclaimed 'radical atheist'."
+                    );
+            var omar= await _authorManager.CreateAsync(
+                    "Omar Abu Al Hijaa",
+                    new DateTime(1985, 5, 15),
+                    "Software developer and tech enthusiast."
+                    );
+
+           var orwellSaved = await _authorRepository.InsertAsync(orwell, autoSave: true);
+            var douglasSaved = await _authorRepository.InsertAsync(douglas, autoSave: true);
+            var omarSaved = await _authorRepository.InsertAsync(omar, autoSave: true);
+
+
+            await _bookRepository.InsertAsync(new Book(
                     _guidGenerator.Create(),
                     "1984",
                     BookType.Dystopia,
-                    new DateTime(1949,6,8),
-                    19.84f
-                    ),
-                new Book(
+                    new DateTime(1949, 6, 8),
+                    19.84f,
+                    orwellSaved.Id
+                    ), autoSave: true);
+
+            await _bookRepository.InsertAsync(new Book(
                     _guidGenerator.Create(),
                     "The Hitchhiker's Guide to the Galaxy",
                     BookType.ScienceFiction,
-                    new DateTime(1995,9,27),
-                    42.0f
-                    ),
-                new Book(
+                    new DateTime(1995, 9, 27),
+                    42.0f,
+                    douglasSaved.Id
+                    ), autoSave: true);
+            await _bookRepository.InsertAsync(new Book(
                     _guidGenerator.Create(),
                     "Omar Book",
                     BookType.Science,
-                    new DateTime(2003,9,27),
-                    145.5f
-                    ),
+                    new DateTime(2003, 9, 27),
+                    145.5f,
+                    omarSaved.Id
+                    ), autoSave: true);
 
-            };
-
-
-            await _bookRepository.InsertManyAsync(booksToBeSeeded,autoSave:true);
-
-
-            if(await _authorRepository.GetCountAsync() > 0)
-                return;
-
-            var authorsToBeSeeded = new List<Author> { 
-            
-                await _authorManager.CreateAsync(
-                     "George Orwell",
-                    new DateTime(1903,6,25),
-                    "Orwell produced literary criticism and poetry, fiction and polemical journalism; and is best known for the allegorical novella Animal Farm (1945) and the dystopian novel Nineteen Eighty-Four (1949)."
-                    )
-               ,
-                await _authorManager.CreateAsync(
-                    "Douglas Adams",
-                    new DateTime(1952,3,11),
-                    "Douglas Adams was an English author, screenwriter, essayist, humorist, satirist and dramatist. Adams was an advocate for environmentalism and conservation, a lover of fast cars, technological innovation and the Apple Macintosh, and a self-proclaimed 'radical atheist'."
-                    ),
-                await _authorManager.CreateAsync(
-                    "Omar Abu Al Hijaa",
-                    new DateTime(1985,5,15),
-                    "Software developer and tech enthusiast."
-                    )
-
-            };
-            await _authorRepository.InsertManyAsync(authorsToBeSeeded, autoSave: true);
 
         }
     }

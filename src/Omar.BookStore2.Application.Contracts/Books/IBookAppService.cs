@@ -10,5 +10,7 @@ namespace Omar.BookStore2.Books
 {
     public interface IBookAppService:ICrudAppService<BookDto,Guid,PagedAndSortedResultRequestDto,CreateBookDto,UpdateBookDto>
     {
+
+        public Task<ListResultDto<AuthorLookupDto>> GetAuthorLookupAsync();
     }
 }

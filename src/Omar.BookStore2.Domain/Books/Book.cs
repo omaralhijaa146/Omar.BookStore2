@@ -15,25 +15,30 @@ namespace Omar.BookStore2.Books
         public BookType Type { get; private set; }
         public DateTime PublishDate { get; private set; }
         public float Price { get; private set; }
-
+        public Guid AuthorId { get; set; }
 
         private Book()
         {
             
         }
 
-        public Book(Guid id,string name,BookType type,DateTime publishDate,float price):base(id)
+        public Book(Guid id,string name,BookType type,DateTime publishDate,float price,Guid authorId):base(id)
         {
             SetId();
             SetName(name);
             SetType(type);
             SetPublishDate(publishDate);
             SetPrice(price);
+            SetAuthorId(authorId);
         }
 
         private void SetId()
         {
             Check.NotDefaultOrNull<Guid>(Id, nameof(Id));
+        }
+        private void SetAuthorId(Guid authorId)
+        {
+            AuthorId=Check.NotDefaultOrNull<Guid>(authorId, nameof(authorId));
         }
 
         private void SetName(string name) {

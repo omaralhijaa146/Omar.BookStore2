@@ -18,5 +18,7 @@ namespace Omar.BookStore2.Books
 
         [Required]
         public float Price { get; set; }
+
+        public Guid AuthorId {  get; set; }
     }
 }

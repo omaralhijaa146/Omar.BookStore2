@@ -50,6 +50,9 @@ using Volo.Abp.OpenIddict;
 using Volo.Abp.Security.Claims;
 using Volo.Abp.SettingManagement.Web;
 using Volo.Abp.Studio.Client.AspNetCore;
+using Volo.Abp.SettingManagement.Web.Pages.SettingManagement;
+using Omar.BookStore2.Web.Settings;
+using Microsoft.Extensions.Localization;
 
 namespace Omar.BookStore2.Web;
 
@@ -160,6 +163,12 @@ public class BookStore2WebModule : AbpModule
             }
             
             );
+
+        Configure<SettingManagementPageOptions>(opt =>
+        {
+            var localizer=context.Services.GetRequiredService<IStringLocalizer<BookStore2Resource>>();
+            opt.Contributors.Add(new BookStoreSettingPageContributor(localizer));
+        });
     }
 
 

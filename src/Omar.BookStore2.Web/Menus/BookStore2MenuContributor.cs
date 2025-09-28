@@ -72,9 +72,18 @@ public class BookStore2MenuContributor : IMenuContributor
                     l["Menu:Books"],
                     url: "/Books").RequirePermissions(BookStore2Permissions.Books.Default)
                 
+                ).AddItem(
+                
+                new ApplicationMenuItem(
+                    "BooksStore2.Auhtors",
+                    l["Menu:Authors"],
+                    url:"/Authors"
+                    ).RequirePermissions(BookStore2Permissions.Authors.Default)
                 )
             
             );
+
+   
 
         return Task.CompletedTask;
     }

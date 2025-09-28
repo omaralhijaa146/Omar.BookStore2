@@ -13,6 +13,7 @@ public class BookStore2ApplicationAutoMapperProfile : Profile
         CreateMap<CreateBookDto, Book>();
         CreateMap<UpdateBookDto, Book>();
         CreateMap<Author, AuthorDto>();
+        CreateMap<Author, AuthorLookupDto>();
 
         /* You can configure your AutoMapper mapping configuration here.
          * Alternatively, you can split your mapping configurations

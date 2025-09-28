@@ -6,6 +6,7 @@ using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Text;
 using System.Threading.Tasks;
+using Volo.Abp.Domain.ChangeTracking;
 using Volo.Abp.Domain.Repositories.EntityFrameworkCore;
 using Volo.Abp.EntityFrameworkCore;
 
@@ -17,13 +18,14 @@ namespace Omar.BookStore2.EntityFrameworkCore.Authors
         {
         }
 
+        [DisableEntityChangeTracking]
         public async Task<Author> FindByNameAsync(string name)
         {
             var dbSet = await GetDbSetAsync();
             var result = await dbSet.FirstOrDefaultAsync(x=>x.Name==name);
             return result;
         }
-
+       
         public async Task<List<Author>> GetListAsync(int skipCount, int maxResultCount, string sorting, string filter = null)
         {
             var dbSet= await GetDbSetAsync();
