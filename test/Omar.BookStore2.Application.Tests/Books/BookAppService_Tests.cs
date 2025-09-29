@@ -1,4 +1,5 @@
-﻿using Shouldly;
+﻿using Omar.BookStore2.Authors;
+using Shouldly;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +16,8 @@ namespace Omar.BookStore2.Books
         where TStratupModule : class, IAbpModule
     {
         private readonly IBookAppService _bookAppService;
+        private readonly IAuthorAppService _authorAppService;
+
         private CreateBookDto CreateValidBookDto => new CreateBookDto
         {
             Name = "New test book 42",
@@ -34,6 +37,7 @@ namespace Omar.BookStore2.Books
         public BookAppService_Tests()
         {
             _bookAppService = GetRequiredService<IBookAppService>();
+            _authorAppService = GetRequiredService<IAuthorAppService>();
         }
 
         [Theory]
@@ -46,7 +50,7 @@ namespace Omar.BookStore2.Books
             SkipCount= skipCount
             });
             books.TotalCount.ShouldBeGreaterThan(0);
-            books.Items.ShouldContain(x=>x.Name=="1984");
+            books.Items.ShouldContain(x=>x.Name=="1984"&&x.AuthorName=="George Orwell");
         }
 
         [Theory]
@@ -55,12 +59,15 @@ namespace Omar.BookStore2.Books
         [InlineData("", 10, "2025-10-4", BookType.ScienceFiction)]
         public async Task Should_Create_A_Valid_Book(string? name,float price,string publishDate,BookType type)
         {
+            var authors = await _authorAppService.GetListAsync(new GetAuthorListDto());
+            var firstAuthor= authors.Items.FirstOrDefault();
             var bookDto = new CreateBookDto
             {
                 Name = name,
                 Price = price,
                 PublishDate = DateTime.Parse(publishDate),
-                Type = type
+                Type = type,
+                AuthorId=firstAuthor.Id
             };
 
             if (string.IsNullOrEmpty(name))
@@ -73,7 +80,7 @@ namespace Omar.BookStore2.Books
             }
             else
             {
-                var createdBook =  _bookAppService.CreateAsync(bookDto).Result;
+                var createdBook = await _bookAppService.CreateAsync(bookDto);
                 createdBook.Id.ShouldNotBe(Guid.Empty);
                 createdBook.Name.ShouldBe(name);
             }

@@ -44,7 +44,7 @@ namespace Omar.BookStore2.Books
             var result = await AsyncExecuter.FirstOrDefaultAsync(query);
 
             if (result is null)
-                throw new EntityNotFoundException();
+                throw new EntityNotFoundException(typeof(Book),id);
 
             var bookDto = ObjectMapper.Map<Book, BookDto>(result.Book);
             bookDto.AuthorName = result.AuthorName;

@@ -44,6 +44,7 @@
     "AuthorDeletionConfirmationMessage": "Are you sure to delete the author '{0}'?",
     "BirthDate": "Birth date",
     "NewAuthor": "New author",
-    "CustomSettingGroup": "Custom Setting Group"
+    "CustomSettingGroup": "Custom Setting Group",
+    "Author": "Author"
   }
 }
