@@ -7,6 +7,7 @@ using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Text;
 using System.Threading.Tasks;
+using Volo.Abp;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Entities;
@@ -15,39 +16,27 @@ using Volo.Abp.Domain.Repositories;
 namespace Omar.BookStore2.Books
 {
     [Authorize(BookStore2Permissions.Books.Default)]
-    public class BookAppService : CrudAppService<Book,BookDto,Guid,PagedAndSortedResultRequestDto,CreateBookDto,UpdateBookDto>,IBookAppService
+    public class BookAppService : ApplicationService,IBookAppService
     {
+        private readonly IBookRepository _bookRepository;
         private readonly IAuthorRepository _authorRepository;
 
-        public BookAppService(IRepository<Book,Guid> repository,IAuthorRepository authorRepository):base(repository)
+        public BookAppService(IBookRepository bookRepository,IAuthorRepository authorRepository)
         {
-
-            GetPolicyName = BookStore2Permissions.Books.Default;
-            GetListPolicyName = BookStore2Permissions.Books.Default;
-            CreatePolicyName = BookStore2Permissions.Books.Create;
-            UpdatePolicyName = BookStore2Permissions.Books.Edit;
-            DeletePolicyName = BookStore2Permissions.Books.Delete;
+            _bookRepository = bookRepository;
             _authorRepository = authorRepository;
         }
 
-        public override async Task<BookDto> GetAsync(Guid id)
+        public async Task<BookDto> GetAsync(Guid id)
         {
-            var bookQueryable = await Repository.GetQueryableAsync();
-            var authorQueryable = await _authorRepository.GetQueryableAsync();
 
-            var query = from book in bookQueryable
-                        join author in authorQueryable
-                        on book.AuthorId equals author.Id
-                        where book.Id == id
-                        select new { Book=book, AuthorName=author.Name };
-
-            var result = await AsyncExecuter.FirstOrDefaultAsync(query);
+            var result = await _bookRepository.GetAsync(id);
 
             if (result is null)
                 throw new EntityNotFoundException(typeof(Book),id);
 
-            var bookDto = ObjectMapper.Map<Book, BookDto>(result.Book);
-            bookDto.AuthorName = result.AuthorName;
+            var bookDto = ObjectMapper.Map<Book, BookDto>(result.Value.book);
+            bookDto.AuthorName = result.Value.authorName;
             return bookDto;
         }
 
@@ -58,42 +47,74 @@ namespace Omar.BookStore2.Books
         }
 
 
-        public override async Task<PagedResultDto<BookDto>> GetListAsync(PagedAndSortedResultRequestDto input)
+        public async Task<PagedResultDto<BookDto>> GetListAsync(GetBookListDto bookListDto)
         {
-            var bookQueryable = await Repository.GetQueryableAsync();
-            var authorQueryable = await _authorRepository.GetQueryableAsync();
 
-            var query = from book in bookQueryable
-                        join author in authorQueryable
-                        on book.AuthorId equals author.Id
-                        select new { Book = book, AuthorName = author.Name };
+            bookListDto.Sorting = NormalizeSorting(bookListDto.Sorting);
 
-            query = query.OrderBy(NormalizeSorting(input.Sorting)).Skip(input.SkipCount).Take(input.MaxResultCount);
+            var books = await _bookRepository.GetListAsync(bookListDto.SkipCount,bookListDto.MaxResultCount,bookListDto.Sorting,bookListDto.Filter,bookListDto.FilterByAuthor);
 
-            var result= await AsyncExecuter.ToListAsync(query);
+          
+            if(!books.Any())
+                return new PagedResultDto<BookDto>(0, []);
 
-            var bookDtos = result.Select(x => {
+            var bookDtos = books.Select(x => {
 
-                var bookDto = ObjectMapper.Map<Book, BookDto>(x.Book);
-                bookDto.AuthorName = x.AuthorName;
+                var bookDto = ObjectMapper.Map<Book, BookDto>(x.book);
+                bookDto.AuthorName = x.authorName;
                 return bookDto;
             
             }).ToList();
             
-            var totalCount= await Repository.GetCountAsync();
+            // since the books cannot exist without author we dont need to override the count method to join the table and then count
+            var totalCount= await _bookRepository.GetCountAsync();
 
             return new PagedResultDto<BookDto>(totalCount,bookDtos);
         }
-        private static string NormalizeSorting(string sorting)
-        {
-            if(sorting.IsNullOrWhiteSpace()) return $"book.{nameof(Book.Name)}";
 
-            if (sorting.Contains("authorName", StringComparison.OrdinalIgnoreCase))
-            
-                return sorting.Replace("authorName","author.Name",StringComparison.OrdinalIgnoreCase);
-           
-            return $"book.{sorting}" ;
+        [Authorize(BookStore2Permissions.Books.Create)]
+        public async Task CreateAsync(CreateBookDto input)
+        {
+           if(input is null)
+                throw new BusinessException("Invalid book. Book cannot be null");
+
+            var book = ObjectMapper.Map<CreateBookDto, Book>(input);
+
+            await _bookRepository.InsertAsync(book);
+          
         }
 
+        [Authorize(BookStore2Permissions.Books.Edit)]
+        public async Task UpdateAsync(Guid id, UpdateBookDto input)
+        {
+           if(input is null) throw new BusinessException("Invalid book. Book cannot be null");
+
+            if (input.Id != id)
+                throw new BusinessException("Invalid book id").WithData("input", nameof(input));
+
+            var oldBook= await _bookRepository.GetAsync(id);
+            ObjectMapper.Map(input, oldBook.Value.book); 
+            await _bookRepository.UpdateAsync(oldBook.Value.book);
+        }
+        
+        [Authorize(BookStore2Permissions.Books.Delete)]
+        public async Task DeleteAsync(Guid id)
+        {
+            var book= await _bookRepository.GetAsync(id);
+            if (book is null)
+                throw new BusinessException("Book does not exist");
+            await _bookRepository.DeleteAsync(book.Value.book);
+        }
+
+        private static string NormalizeSorting(string sorting)
+        {
+            if (sorting.IsNullOrWhiteSpace()) return $"Book.{nameof(Book.Name)}";
+
+            if (sorting.Contains("authorName", StringComparison.OrdinalIgnoreCase))
+
+                return sorting.Replace("authorName", "AuthorName", StringComparison.OrdinalIgnoreCase);
+
+            return $"Book.{sorting}";
+        }
     }
 }

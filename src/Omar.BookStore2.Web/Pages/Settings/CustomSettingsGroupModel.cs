@@ -21,11 +21,11 @@ namespace Omar.BookStore2.Web.Pages.Settings
         public async Task OnGetAsync()
         {
             CustomSettings = new CustomSettingsDto();
-            CustomSettings.TestSetting = await settingManager.GetOrNullGlobalAsync(BookStore2Settings.Test);
+            CustomSettings.ShowBookAuthor = await settingManager.GetOrNullGlobalAsync(BookStore2Settings.ShowBookAuthor);
         }
         public async Task<IActionResult> OnPostAsync()
         {
-            await settingManager.SetGlobalAsync(BookStore2Settings.Test, CustomSettings.TestSetting);
+            await settingManager.SetGlobalAsync(BookStore2Settings.ShowBookAuthor, CustomSettings.ShowBookAuthor);
             return NoContent();
         }
     }

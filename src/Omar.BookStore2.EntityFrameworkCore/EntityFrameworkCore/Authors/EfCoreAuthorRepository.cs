@@ -29,7 +29,7 @@ namespace Omar.BookStore2.EntityFrameworkCore.Authors
         public async Task<List<Author>> GetListAsync(int skipCount, int maxResultCount, string sorting, string filter = null)
         {
             var dbSet= await GetDbSetAsync();
-
+           
             var pagedResult = await dbSet
                 .WhereIf(
                 !filter.IsNullOrWhiteSpace(),

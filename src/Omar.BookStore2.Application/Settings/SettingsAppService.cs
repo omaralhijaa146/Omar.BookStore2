@@ -21,13 +21,13 @@ namespace Omar.BookStore2.Settings
         public async Task ChangeSettingAsync(CreateCustomSettingsDto settingsDto) {
 
             Check.NotNull(settingsDto,nameof(settingsDto));
-            Check.NotNullOrWhiteSpace(settingsDto.TestSetting,nameof(settingsDto.TestSetting));
-            await _settingManager.SetGlobalAsync(BookStore2Settings.Test,settingsDto.TestSetting);
+            Check.NotNullOrWhiteSpace(settingsDto.ShowBookAuthor,nameof(settingsDto.ShowBookAuthor));
+            await _settingManager.SetGlobalAsync(BookStore2Settings.ShowBookAuthor,settingsDto.ShowBookAuthor);
         }
         public async Task<CustomSettingsDto> GetSettingsAsync()
         {
             var settingsDto= new CustomSettingsDto { 
-                TestSetting= (await _settingManager.GetOrNullGlobalAsync(BookStore2Settings.Test))
+                ShowBookAuthor= (await _settingManager.GetOrNullGlobalAsync(BookStore2Settings.ShowBookAuthor))
             };
             return settingsDto;
         }

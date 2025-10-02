@@ -9,6 +9,6 @@ public class BookStore2SettingDefinitionProvider : SettingDefinitionProvider
         //Define your own settings here. Example:
         //context.Add(new SettingDefinition(BookStore2Settings.MySetting1));
 
-        context.Add(new SettingDefinition(BookStore2Settings.Test,isVisibleToClients:true));
+        context.Add(new SettingDefinition(BookStore2Settings.ShowBookAuthor,isVisibleToClients:true));
     }
 }

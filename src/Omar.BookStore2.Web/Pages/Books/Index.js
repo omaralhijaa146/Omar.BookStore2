@@ -3,11 +3,42 @@
 $(
 
     function () {
+        
+        const myWidgetManager = new abp.WidgetManager({
+            wrapper: '#WidgetsArea', filterCallback: function () {
+                return $("#FilterForm").serialize();
+            }
+        });
+
+        myWidgetManager.init();
+
+        $("#FilterForm").on("submit", function (e) {
+
+            e.preventDefault();
+            myWidgetManager.refresh();
+        });
+
+        $('#next').click(function () {
+            let skip = parseInt($('#skipCount').val()) || 0;
+            let max = parseInt($('#maxResultCount').val()) || 10;
+            $('#skipCount').val(skip + max);
+            myWidgetManager.refresh();
+        });
+
+        $('#prev').click(function () {
+            let skip = parseInt($('#skipCount').val()) || 0;
+            let max = parseInt($('#maxResultCount').val()) || 10;
+            $('#skipCount').val(Math.max(skip - max, 0));
+            myWidgetManager.refresh();
+        });
+
 
         const l = abp.localization.getResource('BookStore2');
         const createModal = new abp.ModalManager(abp.appPath + "Books/CreateModal");
 
         const editModal = new abp.ModalManager(abp.appPath + "Books/EditModal");
+
+        const showAuthor = abp.setting.get('BookStore2.ShowBookAuthor');
 
         const dataTable = $("#BooksTable").DataTable(
 
@@ -62,7 +93,8 @@ $(
                         },
                         {
                             title: l("Author"),
-                            data:"authorName"
+                            data: "authorName",
+                            visible: showAuthor
                         },
                         {
                             title: l("Type"),

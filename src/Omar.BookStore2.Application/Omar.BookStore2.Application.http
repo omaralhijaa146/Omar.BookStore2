@@ -1,0 +1,6 @@
+﻿@Omar.BookStore2.Application_HostAddress = 
+
+
+GET {{Omar.BookStore2.Application_HostAddress}}/api/app/book
+
+###

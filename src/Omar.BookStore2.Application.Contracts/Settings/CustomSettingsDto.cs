@@ -1,5 +1,5 @@
 ﻿public class CustomSettingsDto
 {
 
-    public string TestSetting { get; set; }
+    public string ShowBookAuthor { get; set; }
 }

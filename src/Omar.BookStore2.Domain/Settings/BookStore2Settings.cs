@@ -7,6 +7,6 @@ public static class BookStore2Settings
     //Add your own setting names here. Example:
     //public const string MySetting1 = Prefix + ".MySetting1";
 
-    public const string Test = Prefix + ".TestSetting";
+    public const string ShowBookAuthor = Prefix + ".ShowBookAuthor";
 
 }

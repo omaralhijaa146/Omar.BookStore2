@@ -2,17 +2,83 @@
 
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.Extensions.Localization
+@using Omar.BookStore2.Books
 @using Omar.BookStore2.Permissions
+@using Omar.BookStore2.Settings
+@using Omar.BookStore2.Web.Components.BooksListWidgetServerRefreshViewComponent
 @using Omar.BookStore2.Web.Pages.Books
 @using Omar.BookStore2.Localization;
+@using Volo.Abp.Settings
 @model IndexModel
 @inject IAuthorizationService AuthorizationService;
 @inject IStringLocalizer<BookStore2Resource> L;
+@inject ISettingProvider SettingProvider
+@section scripts {
 
-@section scripts{
-
-    <abp-script src="/Pages/Books/Index.js"/>
+    <abp-script src="/Pages/Books/Index.js" />
 }
+
+
+    <form method="get" id="FilterForm">
+        <div class="container-fluid">
+            <div class="d-flex align-items-center">
+                <input class="form-control me-2" type="text" name="filter" placeholder="Search by title..." style="width: 300px;" />
+                <input class="form-control me-2" type="text" name="filterByAuthor" placeholder="Filter by author..." style="width: 300px;" />
+                <input type="hidden" name="skipCount" id="skipCount" value="0" />
+                <input type="hidden" name="maxResultCount" id="maxResultCount" value="10" />
+                <div class="btn-group">
+                    <button class="btn btn-primary" type="submit">Search</button>
+                    <button id="next" class="btn btn-primary" type="button">Next</button>
+                    <button id="prev" class="btn btn-primary" type="button">Prev</button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+
+<hr />
+
+<div id="WidgetsArea" data-widget-filter="#FilterForm">
+    @await Component.InvokeAsync(typeof(BookListWidgetServerRefreshViewComponent),new GetBookListDto
+    {
+        SkipCount = 0,
+        MaxResultCount = 10,
+        Sorting = "authorName"
+
+        })
+;
+</div>
+
+<hr />
+<form method="get" id="ClientSideFilterForm">
+    <div class="container-fluid">
+        <div class="d-flex align-items-center">
+            <input class="form-control me-2" type="text" name="filter" placeholder="Search by title..." style="width: 300px;" />
+            <input class="form-control me-2" type="text" name="filterByAuthor" placeholder="Filter by author..." style="width: 300px;" />
+            <input type="hidden" name="skipCount" id="skipCount" value="0" />
+            <input type="hidden" name="maxResultCount" id="maxResultCount" value="10" />
+            <div class="btn-group">
+                <button class="btn btn-primary" type="submit">Search</button>
+                <button id="nextClient" class="btn btn-primary" type="button">Next</button>
+                <button id="prevClient" class="btn btn-primary" type="button">Prev</button>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+<hr />
+
+<div id="WidgetsAreaClientSide" data-widget-filter="#ClientSideFilterForm">
+    @await Component.InvokeAsync(typeof(Components_BooksListWidgetClintSideRefreshViewComponent_Default),new GetBookListDto
+        {
+        SkipCount = 0,
+        MaxResultCount = 10,
+        Sorting = "authorName"
+
+        });
+</div>
+<hr />
 
 <abp-card>
 
@@ -23,6 +89,13 @@
                 <h2>@L["Books"]</h2>
             </abp-column>
 
+            @if (await SettingProvider.IsTrueAsync(BookStore2Settings.ShowBookAuthor))
+            {
+                <abp-column size-md="_6">
+                    <h2>@L["ShowBookAuthor IS Enabled"]</h2>
+                </abp-column>
+            }
+
             <abp-column size-md="_6" class="text-end">
                 @if (await AuthorizationService.IsGrantedAsync(BookStore2Permissions.Books.Create))
                 {
@@ -31,7 +104,7 @@
             </abp-column>
 
         </abp-row>
-        
+
     </abp-card-header>
 
     <abp-card-body>
