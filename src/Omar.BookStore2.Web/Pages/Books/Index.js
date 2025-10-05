@@ -3,7 +3,7 @@
 $(
 
     function () {
-        
+        const l = abp.localization.getResource('BookStore2');
         const myWidgetManager = new abp.WidgetManager({
             wrapper: '#WidgetsArea', filterCallback: function () {
                 return $("#FilterForm").serialize();
@@ -32,8 +32,86 @@ $(
             myWidgetManager.refresh();
         });
 
+        abp.widgets.BooksListWidgetClintSideRefresh = function ($wrapper) {
 
-        const l = abp.localization.getResource('BookStore2');
+           var getFilters = function () {
+               var formData = $('#ClientSideFilterForm').serializeArray();
+               var filters = {};
+
+               formData.forEach(function (f) {
+                   filters[f.name] = f.value;
+               });
+               return filters;
+           };
+
+           var refresh = function (filters) {
+               omar.bookStore2.books.book.getList(filters).then(function (result) {
+
+                   var bookList = $($wrapper).find('#book-list');
+                   bookList.empty();
+
+                   console.log(result);
+                   result.items.forEach(function (book) {
+                       
+
+                   bookList.append(`<tr>
+                           <th>${book.name}</th>
+                           <th>${l("Enum:BookType."+book.type)}</th>
+                           <th>${ luxon.DateTime.fromISO(
+                               book.publishDate, { locale: abp.localization.currentCulture.name }
+                           ).toLocaleString()}</th>
+                           <th>${book.price}</th>
+                           <th>${book.authorName}</th>
+                       </tr>`);
+                     });
+
+
+            });
+
+           };
+
+            var init = function () {
+
+                var filters = getFilters();
+                refresh(filters);
+            };
+
+return {
+    init: init,
+    refresh: refresh,
+    getFilters: getFilters
+};
+        };
+
+        var widget = abp.widgets.BooksListWidgetClintSideRefresh("#WidgetsAreaClientSide");
+        widget.init();
+        var filters ={ };
+$("#ClientSideFilterForm").on("submit", function (e) {
+    e.preventDefault();
+   
+    filters = widget.getFilters();
+    widget.refresh(filters);
+
+});
+
+
+        $('#nextClientSide').click(function () {
+            let skip = parseInt($('#skipCountClientSide').val()) || 0;
+            let max = parseInt($('#maxResultCountClientSide').val()) || 10;
+            $('#skipCountClientSide').val(skip + max);
+            filters = widget.getFilters();
+            widget.refresh(filters);
+        });
+
+        $('#prevClientSide').click(function () {
+            let skip = parseInt($('#skipCountClientSide').val()) || 0;
+            let max = parseInt($('#maxResultCountClientSide').val()) || 10;
+            $('#skipCountClientSide').val(Math.max(skip - max, 0));
+            filters = widget.getFilters();
+            widget.refresh(filters);
+        });
+
+        
         const createModal = new abp.ModalManager(abp.appPath + "Books/CreateModal");
 
         const editModal = new abp.ModalManager(abp.appPath + "Books/EditModal");

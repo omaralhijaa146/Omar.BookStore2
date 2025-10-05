@@ -5,6 +5,7 @@
 @using Omar.BookStore2.Books
 @using Omar.BookStore2.Permissions
 @using Omar.BookStore2.Settings
+@using Omar.BookStore2.Web.Components.BooksListWidgetClintSideRefreshViewComponent
 @using Omar.BookStore2.Web.Components.BooksListWidgetServerRefreshViewComponent
 @using Omar.BookStore2.Web.Pages.Books
 @using Omar.BookStore2.Localization;
@@ -55,12 +56,12 @@
         <div class="d-flex align-items-center">
             <input class="form-control me-2" type="text" name="filter" placeholder="Search by title..." style="width: 300px;" />
             <input class="form-control me-2" type="text" name="filterByAuthor" placeholder="Filter by author..." style="width: 300px;" />
-            <input type="hidden" name="skipCount" id="skipCount" value="0" />
-            <input type="hidden" name="maxResultCount" id="maxResultCount" value="10" />
+            <input type="hidden" name="skipCount" id="skipCountClientSide" value="0" />
+            <input type="hidden" name="maxResultCount" id="maxResultCountClientSide" value="10" />
             <div class="btn-group">
                 <button class="btn btn-primary" type="submit">Search</button>
-                <button id="nextClient" class="btn btn-primary" type="button">Next</button>
-                <button id="prevClient" class="btn btn-primary" type="button">Prev</button>
+                <button id="nextClientSide" class="btn btn-primary" type="button">Next</button>
+                <button id="prevClientSide" class="btn btn-primary" type="button">Prev</button>
             </div>
         </div>
     </div>
@@ -70,7 +71,7 @@
 <hr />
 
 <div id="WidgetsAreaClientSide" data-widget-filter="#ClientSideFilterForm">
-    @await Component.InvokeAsync(typeof(Components_BooksListWidgetClintSideRefreshViewComponent_Default),new GetBookListDto
+    @await Component.InvokeAsync(typeof(BooksListWidgetClintSideRefreshViewComponent),new GetBookListDto
         {
         SkipCount = 0,
         MaxResultCount = 10,

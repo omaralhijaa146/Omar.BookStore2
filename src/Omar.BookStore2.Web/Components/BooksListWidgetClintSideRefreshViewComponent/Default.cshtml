@@ -12,7 +12,7 @@
 
 <abp-card>
     <abp-card-header>
-        <h4>Books Widgets (Server Side)</h4>
+        <h4>Books Widgets (Client Side)</h4>
     </abp-card-header>
     <abp-card-body>
 
@@ -27,9 +27,10 @@
                     <th>@L["AuthorName"]</th>
                 </tr>
             </thead>
-            <tbody>
-                @foreach (var item in Model.Items)
-                {
+            <tbody id ="book-list">
+               
+                    @foreach (var item in Model.Items)
+                    {
                     <tr>
                         <th>@item.Name</th>
                         <th>@L[$"{item.Type}"]</th>
@@ -38,6 +39,8 @@
                         <th>@item.AuthorName</th>
                     </tr>
                 }
+               
+               
             </tbody>
         </table>
 
